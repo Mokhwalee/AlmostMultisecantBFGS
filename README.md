@@ -10,9 +10,13 @@ For Mac OS, I put the following in the Settings
 /Applications/MATLAB_R2024a.app
 ```
 
-3. 
+3. Set the workspace to the current folder directory, pwd, which gives me
+```bash
+'/Users/moka/Documents/GitHub/AlmostMultisecantBFGS'
+```
 
 ## Almost Multisecant BFGS
+
 
 
 ## Limited Memory Almost Multisecant BFGS

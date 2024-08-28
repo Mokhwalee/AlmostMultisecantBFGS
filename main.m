@@ -11,40 +11,39 @@ debugging script on Mar 4
 7. L-MS-BFGS Schur
 %}
 
+% Print the current working directory
+disp(['Current working directory: ', pwd])
+
+% Add the objective_function folder to the MATLAB path
+addpath(fullfile(pwd, 'objective_function'));
+
 % Generate Problem
 clc, clf, clear; warning('off')
 
-% Problem size m by n
-m = 1000;
-n = 300;
-
-snr = 0.5 % 1, 0.75, 0.5
-eig_range = 20 % 10, 20, 30
-
-class_balance = 0.5;
-logreg_eps = 0.0001;
-stepsize = 0.1;
-p = 10; % p=L
-sigma = 1; % 1, 10, 30
-num_iter = 500;
-iter_limit = 30;
-seed = 10 % random integer generator
+% Get parameters
+[m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, num_iter, iter_limit, seed, signal] = get_parameter();
 rng(seed);
 
-% Problems : (1)Quadratic, (2)low signal Logreg, (3)high signal Logreg
-%[fn, grad] = quadratic(m,n); f0 = fn(x0);
+% ----------- Problems ----------- 
+% (1) Quadratic
+%[fn, grad] = quadratic(m,n); 
+% f0 = fn(x0);
 
+% (2) High/low signal Logreg
 [fn, grad, prob_difficulty, matrix_A, y_sol] = ...
-    high_signal_logreg(m,n,seed,sigma,snr,class_balance,logreg_eps,eig_range);
-%f0 = fn(x0); %initial function val
+    logistic_regression(m, n, seed, sigma, class_balance, logreg_eps, eig_range, signal)
 
-%[fn, grad, prob_difficulty, matrix_A, y_sol] = ...
-%    low_signal_logreg(m,n,seed,sigma,snr,class_balance,logreg_eps,eig_range);
+% (3) Neural Network (TBA)
 
-B = eye(n); x0 = zeros(n,1); f0 = fn(x0);
+B = eye(n); 
+x0 = zeros(n,1); 
+f0 = fn(x0); %initial function val
 
-% optimal with small step-size
-[f_optimal, traj_opt, x_opt] = single_bfgs(B, x0, 0.01, 5000, fn, grad);
+asdf
+
+% -------- Get trajectory of the each method --------
+% (1) optimal with small step-size (gradient/hessian flow)
+[f_optimal, traj_opt, x_opt] = single_bfgs(B, x0, 0.001, 5000, fn, grad);
 
 %% Multisecant BFGS
 [f_multi_bfgs, traj_multi_bfgs, x_multi_bfgs] = ... % Vanilla
@@ -120,9 +119,11 @@ legend({%'symm multi BFGS',...
     }, Location="southwest", Fontsize=16)
 
 xlabel("Iteration", FontSize=30)
-ylabel("f(x)      ",'Rotation',0, Fontsize=30)
+ylabel("f(x)", 'Rotation', 0, Fontsize=30)
 title('Logistic Regression Loss (log-log)', FontSize=26)
 
+% Save the figure as a PNG file
+saveas(gcf, fullfile('fig' ,'temp_figure.png'))
 
 
 
