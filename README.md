@@ -1,6 +1,8 @@
 ## System settings
-1. To use the Matlab application downloaded in Desktop or Application (with license), refer the following link :  
+1. To use the Matlab downloaded in your computer (with license), refer to the following link :  
+```bash
 https://github.com/mathworks/MATLAB-extension-for-vscode/blob/main/README.md#get-started
+```
 
 2. Add the matlab directory in the Settings : 
 For Mac OS, I put 
