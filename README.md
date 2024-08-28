@@ -1,11 +1,11 @@
 ## System settings
-1. To use the Matlab downloaded in your computer (with license), refer to the following link :  
+1. To run the Matlab in your computer (with license), refer to this info :  
 ```bash
 https://github.com/mathworks/MATLAB-extension-for-vscode/blob/main/README.md#get-started
 ```
 
-2. Add the matlab directory in the Settings : 
-For Mac OS, I put 
+2. Add the Matlab application directory in the Settings : 
+For Mac OS, I put the following in the Settings
 ```bash
 /Applications/MATLAB_R2024a.app
 ```
