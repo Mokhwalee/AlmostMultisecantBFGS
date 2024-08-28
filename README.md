@@ -1,5 +1,5 @@
 ## System settings
-1. To run the Matlab in your computer (with license), refer to this info :  
+1. To run the Matlab in your computer (with license), please refer to this ReadMe info :  
 ```bash
 https://github.com/mathworks/MATLAB-extension-for-vscode/blob/main/README.md#get-started
 ```
