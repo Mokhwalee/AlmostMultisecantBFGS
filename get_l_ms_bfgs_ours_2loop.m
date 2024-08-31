@@ -1,8 +1,39 @@
 % Description: This function computes the L-BFGS update for the Hessian-vector product
 % Return H(k)*g(k) Limited Multisecant without additional mu*I term
 
-function Hkgk = get_l_ms_bfgs_ours(Sk, Yk, gk) % multisecant size
+function Hkgk = get_l_ms_bfgs_ours_2loop(Sk, Yk, gk) % multisecant size
+    
+    Sbar = []; Ybar = [];
+    for i=1:m
+        Sbar = [Sbar, Sk{i}];
+        Ybar = [Ybar, Yk{i}];
+    end
 
+    s_km1 = Sk{end}(:, end); y_km1 = Yk{end}(:, end);
+    rk = (y_km1'*s_km1) / (y_km1'*y_km1); % % gamma(k), scalar
+    
+    q = gk;
+    m = size(Sk,2);
+    alpha = zeros(m,1);
+    rho = 1./(sum(Yk.*Sk,1)); % vector
+
+    % two-loop recursion
+    for j = m:-1:1
+        alpha(j) = rho(j)*(smem(:,j)'*q);
+        q = q - alpha(j)*ymem(:,j);
+    end
+
+    gamma = (ymem(:,end)'*smem(:,end))/(ymem(:,end)'*ymem(:,end));
+    r = gamma*q;
+
+    for j = 1:m
+        beta = rho(j)*(ymem(:,j)'*r); % scalar
+        r = r + ( smem(:,j) * (alpha(j)-beta) );
+    end
+
+    Hkgk = r + 0;
+
+    %{
     m = size(Sk,2); % because Sk is the cell array
     %n = size(Sk{1},1);
     
@@ -82,6 +113,8 @@ function Hkgk = get_l_ms_bfgs_ours(Sk, Yk, gk) % multisecant size
     % Compute Hkgk
     Hkgk = rk*gk + one+two+three+four;
 
-    
+    %}
+
+
 end
     
