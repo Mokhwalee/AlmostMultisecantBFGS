@@ -1,7 +1,7 @@
 function [m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, num_iter, iter_limit, seed, signal] = get_parameter()
 % Problem size m by n
 m = 100;
-n = 30;
+n = 80;
 eig_range = 20; % 10, 20, 30
 class_balance = 0.5;
 logreg_eps = 0.0001;
