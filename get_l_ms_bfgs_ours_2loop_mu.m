@@ -11,8 +11,9 @@ function Hkgk = get_l_ms_bfgs_ours_2loop_mu(Sk, Yk, gk) % multisecant size
     %inv(W) in MS version (rho in single secant version)
     Winv = cell(m,1);
     for i=1:m
+        L = size(Yk{i},2);
         %Winv{i} = inv(Yk{i}'*Sk{i}); 
-        Winv{i} = (Yk{i}'*Sk{i})\eye(size(Yk{i},2));
+        Winv{i} = (Yk{i}'*Sk{i})\eye(L);
     end
 
     % two-loop recursion
@@ -30,8 +31,15 @@ function Hkgk = get_l_ms_bfgs_ours_2loop_mu(Sk, Yk, gk) % multisecant size
         r = r + ( Sk{j} * (alpha{j}-beta) );
     end
     
-    %mu = getmu(W, D1, D2, iter_limit);
-    Hkgk = r ;%+ mu*gk;
+    % get mu
+    iter_limit = 10;
+    W = [Winv{end}, eye(size(Yk{end},2)); 
+         eye(size(Yk{end},2)), gamma*Sk{end}'*Sk{end}];
+    D1 = [Yk{end}, gamma*Sk{end}];
+    D2 = D1 + 0.;
+    mu = getmu(W, D1, D2, iter_limit);
+
+    Hkgk = r + mu*gk;
 
 end
     
