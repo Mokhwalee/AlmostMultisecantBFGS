@@ -31,9 +31,9 @@ function Hkgk = get_l_ms_bfgs_ours_2loop_mu(Sk, Yk, gk) % multisecant size
         r = r + ( Sk{j} * (alpha{j}-beta) );
     end
     
-    % get mu
+    % get mu and set up Bk=gamma*I
     iter_limit = 10;
-    W = [Winv{end}, eye(size(Yk{end},2)); 
+    W = [-Yk{end}'*Sk{end}, eye(size(Yk{end},2)); 
          eye(size(Yk{end},2)), gamma*Sk{end}'*Sk{end}];
     D1 = [Yk{end}, gamma*Sk{end}];
     D2 = D1 + 0.;

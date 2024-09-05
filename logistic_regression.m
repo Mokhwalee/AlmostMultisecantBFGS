@@ -18,6 +18,8 @@ function [fn,grad,prob_difficulty, A, b] = logistic_regression(m,n,seed,sigma,cl
         c = randn(n,1); % distance
     elseif signal == 1 % high
         c = randn(n,1).*(1-c_bar);  
+    else
+        disp("Warning : Set the signal value either 0 or 1")
     end
 
     W = sigma*randn(m,n).*(ones(m,1)*c_bar'); % error of the data

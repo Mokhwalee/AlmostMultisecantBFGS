@@ -1,6 +1,6 @@
 % Description: L-MS-BFGS method with our own implementation
 
-function [f_optimal, traj_opt, x_opt] = l_ms_bfgs_ours_2loop_mu(x0, stepsize, max_iter, L, fn, grad)
+function [f_optimal, traj_opt, x_opt] = l_ms_bfgs_ours_2loop_mu(x0, stepsize, max_iter, L, fn, grad, iter_limit)
 
     %n = size(B,1);
     traj_opt = Inf(max_iter,1);
@@ -17,7 +17,7 @@ function [f_optimal, traj_opt, x_opt] = l_ms_bfgs_ours_2loop_mu(x0, stepsize, ma
         if iter == 1
             xn = x - grad(x)*stepsize;
         else
-            Bg = get_l_ms_bfgs_ours_2loop_mu(Sk, Yk, grad(x));
+            Bg = get_l_ms_bfgs_ours_2loop_mu(Sk, Yk, grad(x), iter_limit);
             xn = x - Bg*stepsize;        
         end
 
