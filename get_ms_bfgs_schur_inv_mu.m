@@ -1,8 +1,6 @@
-function Hkgk = get_ms_bfgs_schur_inv(Sk, Yk, gk, iter_limit) % multisecant size
+function Hkgk = get_ms_bfgs_schur_inv_mu(Sk, Yk, gk, iter_limit) % multisecant size
 
-% Woodbury + mu*I : L-MS-BFGS
-% Return H(k)*g(k) Limited Multisecant
-% With additional mu*I term
+% Schur complement with additional mu*I term
 
 m = size(Sk,2);
 s_km1 = Sk(:, end); 

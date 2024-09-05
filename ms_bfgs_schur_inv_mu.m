@@ -1,5 +1,5 @@
-function [f_optimal, traj_opt, x_opt] = ms_bfgs_schur_inv(x0, stepsize, ...
-                                        max_iter, L, fn, grad,  iter_limit)
+function [f_optimal, traj_opt, x_opt] = ms_bfgs_schur_inv_mu(x0, stepsize, ...
+                                        max_iter, L, fn, grad, iter_limit)
 
 % Limited Memory multi secant BFGS for H
 traj_opt = Inf(max_iter,1);
@@ -14,7 +14,7 @@ for iter = 1:max_iter
     if iter == 1
         xn = x - grad(x)*stepsize;
     else
-        Bg = get_Hg_ms_w(smem, ymem, grad(x), iter_limit);
+        Bg = get_ms_bfgs_schur_inv_mu(smem, ymem, grad(x), iter_limit);
         xn = x - Bg*stepsize;
     end
 
