@@ -1,4 +1,4 @@
-function Hkgk = get_l_ms_bfgs_schur_inv(Sk, Yk, gk, iter_limit) % multisecant size
+function Hkgk = get_l_ms_bfgs_schur_inv_mu(Sk, Yk, gk, iter_limit) % multisecant size
 
 % Woodbury + mu*I : L-MS-BFGS
 % Return H(k)*g(k) Limited Multisecant
