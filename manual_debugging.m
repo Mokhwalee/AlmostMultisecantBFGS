@@ -4,6 +4,7 @@ n = 100;
 m = 5;
 max_iter = 100;
 diff = zeros(max_iter,1);
+diff_old = zeros(max_iter,1);
 
 for iter = 1:max_iter  %iteration
 
@@ -55,11 +56,60 @@ for iter = 1:max_iter  %iteration
 
     diff(iter) = norm(Hkgk_2loop - Hkgk_brute_force);
     diff_normalized = (diff - min(diff)) / (max(diff) - min(diff));
+
+    
+    
+    %% ---------- Old version of Brute Force and Extended ---------- %%
+    % Brute Force version
+    Hk = gamma*eye(n);
+    for i=1:m
+        SWS= Sk{i}*((Yk{i}'*Sk{i})'\Sk{i}');
+        V = eye(n) - Yk{i}*((Yk{i}'*Sk{i})'\Sk{i}');
+        Hk = V'*Hk*V + SWS;
+    end
+    Hkgk_brute_force_old = Hk*gk;
+
+    % Extended version
+    SWS_cell = {}; V_cell = {};
+    for i=1:m
+        SWS_cell{i} = Sk{i}*((Yk{i}'*Sk{i})'\Sk{i}'); % SW'S'
+        V_cell{i} = eye(n) - Yk{i}*((Yk{i}'*Sk{i})'\Sk{i}'); % V = I-YW'S'
+    end
+    Hk = zeros(n); V_product = eye(n); %Hk = rk*eye(n);
+    for i=m:-1:1
+        if i==m
+            Hk = Hk + SWS_cell{i}; % S(k-1)*W(k-1)'*S(k-1)'
+        else
+            V_product = V_cell{i+1}*V_product;
+            Hk = Hk + V_product'*SWS_cell{i}*V_product;
+        end
+    end
+    V_product = V_cell{1}*V_product;
+    Hk = Hk + V_product'*gamma*V_product; 
+    Hkgk_extended_old = Hk*gk;
+
+    diff_old(iter) = norm(Hkgk_brute_force_old - Hkgk_extended_old);
+    diff_normalized_old = (diff - min(diff)) / (max(diff) - min(diff));
+
 end
 
-% Plot the normalized diff array
+
+% Create a figure with two subplots
 figure;
+
+% Plot the normalized diff array in the first subplot
+subplot(2, 1, 1);
 plot(diff_normalized);
-title('Normalized Difference between L-MS-BFGS-2loop and L-MS-BFGS-Brute_Force');
+title('Normalized Difference between L-MS-BFGS-2loop and L-MS-BFGS-Brute-Force');
 xlabel('Iteration');
 ylabel('Normalized Difference');
+ylim([0, 1e-5]); % Set the y-axis limits
+
+% Plot the normalized diff_old array in the second subplot
+subplot(2, 1, 2);
+plot(diff_normalized_old);
+title('Normalized Difference (Old) between L-MS-BFGS-2loop and L-MS-BFGS-Brute-Force');
+xlabel('Iteration');
+ylabel('Normalized Difference (Old)');
+ylim([0, 1e-2]); % Set the y-axis limits
+
