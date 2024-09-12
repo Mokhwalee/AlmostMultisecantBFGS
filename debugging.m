@@ -12,16 +12,21 @@ B = eye(n);
 x0 = zeros(n,1); 
 f0 = fn(x0);
 
+% Optimal with small step-size (gradient/hessian flow)
+% Solution : Single BFGS (baseline)
+[f_optimal, traj_opt, x_opt] = single_bfgs(B, x0, 0.001, 5000, fn, grad);
+
+
+% Debugging
 [f_l_ms_bfgs_ours_2loop, traj_l_ms_bfgs_ours_2loop, x_l_ms_bfgs_ours_2loop] = ...
     l_ms_bfgs_ours_2loop(x0, stepsize, num_iter, p, fn, grad);
 
 [f_brute_force, traj_brute_force, x_brute_forcep] = ...
     l_ms_bfgs_brute_force(x0, stepsize, num_iter, p, fn, grad);
 
-
 trajectory = [traj_l_ms_bfgs_ours_2loop, traj_brute_force];
 
-graph = trajectory_bfgs - f_optimal;
+graph = trajectory - f_optimal;
 loglog(graph,'-O', 'MarkerSize', 3)
 legend({'L-MS-BFGS (two loop)', ...
     'L-MS-BFGS (brute force)' , ...

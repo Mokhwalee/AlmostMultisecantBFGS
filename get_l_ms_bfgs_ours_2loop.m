@@ -12,7 +12,8 @@ function Hkgk = get_l_ms_bfgs_ours_2loop(Sk, Yk, gk) % multisecant size
     Winv = cell(m,1);
     for i=1:m
         %Winv{i} = inv(Yk{i}'*Sk{i}); % somewhat less stable
-        Winv{i} = (Yk{i}'*Sk{i})\eye(size(Yk{i},2));
+        L = size(Yk{i},2);
+        Winv{i} = (Yk{i}'*Sk{i})\eye(L);
     end
 
     % two-loop recursion
