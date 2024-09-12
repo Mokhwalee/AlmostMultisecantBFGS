@@ -24,6 +24,7 @@ function Hkgk = get_l_ms_bfgs_ours_2loop(Sk, Yk, gk) % multisecant size
 
     s_km1 = Sk{end}(:, end); y_km1 = Yk{end}(:, end);
     gamma = (y_km1(:,end)'*s_km1(:,end))/(y_km1(:,end)'*y_km1(:,end));
+    %gamma = 1;
     r = gamma*q;
 
     for j = 1:m
