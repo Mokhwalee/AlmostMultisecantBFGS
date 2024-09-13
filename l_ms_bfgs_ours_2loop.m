@@ -13,6 +13,7 @@ function [f_optimal, traj_opt, x_opt] = l_ms_bfgs_ours_2loop(x0, stepsize, max_i
     Sk = {}; Yk = {};
 
     for iter = 1:max_iter
+        fprintf('iter=%d\n', iter);
 
         if iter == 1
             xn = x - grad(x)*stepsize;

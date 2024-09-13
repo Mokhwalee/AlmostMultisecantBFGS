@@ -1,13 +1,18 @@
 % manual debugging
+clc, clf, clear; warning('off')
+seed = 1; % random integer generator
+rng(seed);
+
 % just ramdomly make a matrix and try to debug it
 n = 100;
-m = 5;
-max_iter = 100;
+m = 15;
+max_iter = 25;
 diff = zeros(max_iter,1);
+diff_normalized = zeros(max_iter,1);
 diff_old = zeros(max_iter,1);
+diff_normalized_old = zeros(max_iter,1);
 
 for iter = 1:max_iter  %iteration
-
     %% ------- initialization ------- %%
     % ramdomly make Sk and Yk
     Sk = cell(1, m);
@@ -55,10 +60,13 @@ for iter = 1:max_iter  %iteration
     Hkgk_brute_force = H*gk;
 
     diff(iter) = norm(Hkgk_2loop - Hkgk_brute_force);
-    diff_normalized = (diff - min(diff)) / (max(diff) - min(diff));
+    diff_normalized(iter) = norm(Hkgk_2loop - Hkgk_brute_force)/max(norm(Hkgk_2loop),norm(Hkgk_brute_force));
 
     
     
+    %%
+    [Hkgk_2loop, Hkgk_brute_force]
+
     %% ---------- Old version of Brute Force and Extended ---------- %%
     % Brute Force version
     Hk = gamma*eye(n);
@@ -99,11 +107,11 @@ figure;
 
 % Plot the normalized diff array in the first subplot
 subplot(2, 1, 1);
-plot(diff_normalized);
+semilogy(diff_normalized);
 title('Normalized Difference between L-MS-BFGS-2loop and L-MS-BFGS-Brute-Force');
 xlabel('Iteration');
 ylabel('Normalized Difference');
-ylim([0, 1e-5]); % Set the y-axis limits
+%ylim([0, 1e-5]); % Set the y-axis limits
 
 % Plot the normalized diff_old array in the second subplot
 subplot(2, 1, 2);

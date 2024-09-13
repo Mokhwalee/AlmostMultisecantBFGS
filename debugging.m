@@ -7,6 +7,7 @@ rng(seed);
 
 [fn, grad, prob_difficulty, matrix_A, y_sol] = ...
 logistic_regression(m, n, seed, sigma, class_balance, logreg_eps, eig_range, signal);
+%[fn, grad] = quadratic(m,n);
 
 B = eye(n); 
 x0 = zeros(n,1); 

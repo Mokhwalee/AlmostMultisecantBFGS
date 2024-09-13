@@ -7,6 +7,7 @@ function Hkgk = get_l_ms_bfgs_ours_2loop(Sk, Yk, gk) % multisecant size
     q = gk;
     m = size(Sk,2);
     alpha = cell(m,1);
+    
 
     %inv(W) in MS version (rho in single secant version)
     Winv = cell(m,1);
@@ -14,6 +15,8 @@ function Hkgk = get_l_ms_bfgs_ours_2loop(Sk, Yk, gk) % multisecant size
         %Winv{i} = inv(Yk{i}'*Sk{i}); % somewhat less stable
         L = size(Yk{i},2);
         Winv{i} = (Yk{i}'*Sk{i})\eye(L);
+        
+        cond(Yk{i}'*Sk{i})
     end
 
     % two-loop recursion
