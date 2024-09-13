@@ -1,14 +1,11 @@
 %{
-Single BFGS comparison
-debugging script on Mar 4
-
-1. Vanilla Multi BFGS
-2. Variations of MS-BFGS(Symm, PSD, Schur, W-Schur)
-3. L-MS-BFGS(paper)
-4. L-MS-BFGS Extended
-5. L-MS-BFGS Brute Force
-6. L-MS-BFGS Ours (new format, overleaf)
-7. L-MS-BFGS Schur
+1. L-BFGS (single, two-loop) : l_bfgs_2loop.m
+2. L-MS-BFGS (brute_force old version) : ms_bfgs_brute_force.m
+3. L-MS-BFGS (brute-force for two-loop) : ms_bfgs_brute_force_2loop.m
+4. L-MS-BFGS (extended) : ms_bfgs_extended
+5. L-MS-BFGS (two-loop) : l_ms_bfgs_ours_2loop.m
+6. L-MS-BFGS-mu (two-loop) : l_ms_bfgs_ours_2loop_mu.m
+7. MS-BFGS-Schur-inv-mu (IEEE) : ms_bfgs_schur_inv_mu.m
 %}
 
 % Generate Problem
@@ -18,15 +15,9 @@ clc, clf, clear; warning('off')
 [m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, num_iter, iter_limit, seed, signal] = get_parameter();
 rng(seed);
 
-% ----------- Problems ----------- %%
-% (1) Quadratic
-%[fn, grad] = quadratic(m,n);
-
-% (2) High/low signal Logreg
+% ----------- Logistic Regression Problems ----------- %%
 [fn, grad, prob_difficulty, matrix_A, y_sol] = ...
     logistic_regression(m, n, seed, sigma, class_balance, logreg_eps, eig_range, signal);
-
-% (3) Neural Network (TBA)
 
 
 % ----------- Initialization ----------- %%
@@ -38,22 +29,15 @@ f0 = fn(x0); %initial function val
 % -------- Get trajectory of the each method -------- %
 %% Optimal with small step-size (gradient/hessian flow)
 % Solution : Single BFGS (baseline)
-[f_optimal, traj_opt, x_opt] = single_bfgs(B, x0, 0.001, 5000, fn, grad);
+[f_optimal, traj_opt, x_opt] = single_bfgs_vanilla(B, x0, 0.001, 5000, fn, grad);
 
-
-%% Limited Memory single BFGS
-% paper version 
-%[f_l_bfgs, traj_l_bfgs, x_l_bfgs] = ...
-%    l_bfgs_paper(x0, stepsize, num_iter, p, fn, grad);
-
-% two-loop version
-[f_l_bfgs2, traj_l_bfgs2, x_l_bfgs2] = ...
+% Single L-BFGS two-loop version
+[f_l_bfgs_2loop, traj_l_bfgs_2loop, x_l_bfgs_2loop] = ...
     l_bfgs_2loop(x0, stepsize, num_iter, p, fn, grad);
-
 
 %% MS BFGS (baseline)
 [f_multi_bfgs, traj_multi_bfgs, x_multi_bfgs] = ... % Vanilla
-    ms_bfgs(B, x0, stepsize, num_iter, p, fn, grad);
+    ms_bfgs_vanilla(B, x0, stepsize, num_iter, p, fn, grad);
 
 
 %%  -------- Limited MS BFGS -------- %%
@@ -61,44 +45,36 @@ f0 = fn(x0); %initial function val
 [f_l_ms_bfgs_paper, traj_l_ms_bfgs_paper, x_l_ms_bfgs_paper] = ...
     l_ms_bfgs_paper(x0, stepsize, num_iter, p, fn, grad); 
 
-% Limited MS BFGS (Ours)
-%[f_l_ms_bfgs_ours_paper, traj_l_ms_bfgs_ours_paper, x_l_ms_bfgs_ours_paper] = ...    
-%    l_ms_bfgs_ours_paper(x0, stepsize, num_iter, p, fn, grad);
+[f_l_ms_bfgs_2loop, traj_l_ms_bfgs_2loop, x_l_ms_bfgs_2loop] = ...    
+    l_ms_bfgs_2loop(x0, stepsize, num_iter, p, fn, grad);
 
-[f_l_ms_bfgs_ours_2loop, traj_l_ms_bfgs_ours_2loop, x_l_ms_bfgs_ours_2loop] = ...    
-    l_ms_bfgs_ours_2loop(x0, stepsize, num_iter, p, fn, grad);
-
-[f_l_ms_bfgs_ours_2loop_mu, traj_l_ms_bfgs_ours_2loop_mu, x_l_ms_bfgs_ours_2loop_mu] = ...    
-    l_ms_bfgs_ours_2loop_mu(x0, stepsize, num_iter, p, fn, grad, iter_limit);
+[f_l_ms_bfgs_2loop_mu, traj_l_ms_bfgs_2loop_mu, x_l_ms_bfgs_2loop_mu] = ...    
+    l_ms_bfgs_2loop_mu(x0, stepsize, num_iter, p, fn, grad, iter_limit);
 
 [f_ms_bfgs_schur_inv, traj_ms_bfgs_schur_inv, x_ms_bfgs_schur_inv] = ...
     ms_bfgs_schur_inv_mu(x0, stepsize, num_iter, p, fn, grad, iter_limit);
 
-[f_l_ms_bfgs_schur_inv, traj_l_ms_bfgs_schur_inv, x_l_ms_bfgs_schur_inv] = ...
-    l_ms_bfgs_schur_inv(x0, stepsize, num_iter, p, fn, grad, iter_limit);
-
 
 %% -------- trajectory -------- %%
-trajectory_bfgs = [traj_l_bfgs2, ...
+trajectory_bfgs = [
+    traj_l_bfgs_2loop, ...
     traj_multi_bfgs, ...
     traj_l_ms_bfgs_paper, ...
-    traj_l_ms_bfgs_ours_2loop, ...
-    traj_l_ms_bfgs_ours_2loop_mu, ...
-    traj_ms_bfgs_schur_inv, ...
-    traj_l_ms_bfgs_schur_inv, ...    
+    traj_l_ms_bfgs_2loop, ...
+    traj_l_ms_bfgs_2loop_mu, ...
+    traj_ms_bfgs_schur_inv  
     ];
 
 
 %% -------- graph : f-f* -------- %%
 graph = trajectory_bfgs - f_optimal;
 loglog(graph,'-O', 'MarkerSize', 3)
-legend({'L-BFGS (two-loop)', ...
+legend({'L-BFGS (baseline, two-loop)', ...
     'MS BFGS (baseline)', ...
-    'L-MS-BFGS (baseline, paper)', ...
-    'L-MS-BFGS (baseline, ours)', ...
+    'L-MS-BFGS (paper)', ...
+    'L-MS-BFGS (2-loop)', ...
     'L-MS-BFGS-mu (ours)', ...
     'MS-BFGS-Schur-inv-mu (IEEE)', ...
-    'L-MS-BFGS-Schur-inv-mu (New)', ...
     }, Location="southwest", Fontsize=14)
 
 xlabel("Iteration", FontSize=30)

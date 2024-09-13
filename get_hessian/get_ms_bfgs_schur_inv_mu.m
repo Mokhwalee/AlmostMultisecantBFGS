@@ -1,5 +1,6 @@
 function Hkgk = get_ms_bfgs_schur_inv_mu(Sk, Yk, gk, iter_limit) % multisecant size
 
+% IEEE Asilomar version
 % Schur complement with additional mu*I term
 
 m = size(Sk,2);

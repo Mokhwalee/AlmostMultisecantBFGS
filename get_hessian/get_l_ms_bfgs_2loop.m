@@ -1,7 +1,7 @@
 % Description: This function computes the L-BFGS update for the Hessian-vector product
 % Return H(k)*g(k) Limited Multisecant(MS) without additional mu*I term
 
-function Hkgk = get_l_ms_bfgs_ours_2loop(Sk, Yk, gk) % multisecant size
+function Hkgk = get_l_ms_bfgs_2loop(Sk, Yk, gk) % multisecant size
 
     % Sk and Yk are cell arrays
     q = gk;

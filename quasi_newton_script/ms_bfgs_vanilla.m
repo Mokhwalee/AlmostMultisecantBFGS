@@ -1,4 +1,4 @@
-function [f_optimal, traj_opt, x_opt] = multi_bfgs(B, x0, stepsize, max_iter, p, fn, grad)
+function [f_optimal, traj_opt, x_opt] = ms_bfgs(B, x0, stepsize, max_iter, p, fn, grad)
 
     traj_opt = Inf(max_iter,1);
     smem = []; ymem = [];

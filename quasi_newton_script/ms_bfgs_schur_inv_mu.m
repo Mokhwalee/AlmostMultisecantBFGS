@@ -1,6 +1,6 @@
 function [f_optimal, traj_opt, x_opt] = ms_bfgs_schur_inv_mu(x0, stepsize, ...
                                         max_iter, L, fn, grad, iter_limit)
-
+% IEEE Asilomar version
 % Limited Memory multi secant BFGS for H
 traj_opt = Inf(max_iter,1);
 smem = []; ymem = [];
