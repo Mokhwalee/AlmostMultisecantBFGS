@@ -35,9 +35,7 @@ x0 = zeros(n,1);
 f0 = fn(x0); %initial function val
 
 
-%% -------- Get trajectory of the each method -------- %%
-
-
+% -------- Get trajectory of the each method -------- %
 %% Optimal with small step-size (gradient/hessian flow)
 % Solution : Single BFGS (baseline)
 [f_optimal, traj_opt, x_opt] = single_bfgs(B, x0, 0.001, 5000, fn, grad);

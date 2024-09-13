@@ -97,7 +97,7 @@ for iter = 1:max_iter  %iteration
     Hkgk_extended_old = Hk*gk;
 
     diff_old(iter) = norm(Hkgk_brute_force_old - Hkgk_extended_old);
-    diff_normalized_old = (diff - min(diff)) / (max(diff) - min(diff));
+    diff_normalized_old = norm(Hkgk_brute_force_old - Hkgk_extended_old)/max(norm(Hkgk_brute_force_old),norm(Hkgk_extended_old));
 
 end
 
