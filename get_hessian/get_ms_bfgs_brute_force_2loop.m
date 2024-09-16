@@ -1,7 +1,7 @@
 % Description: Brute Force version of L-MS-BFGS
 % Recursively compute H(k+1)
 
-function Hkgk = get_l_ms_bfgs_brute_force(Sk, Yk, gk) % multisecant size
+function Hkgk = get_ms_bfgs_brute_force_2loop(Sk, Yk, gk) % multisecant size
 
     % Sk and Yk are cell arrays
     n = size(gk,1);

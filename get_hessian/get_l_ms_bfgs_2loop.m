@@ -12,11 +12,11 @@ function Hkgk = get_l_ms_bfgs_2loop(Sk, Yk, gk) % multisecant size
     %inv(W) in MS version (rho in single secant version)
     Winv = cell(m,1);
     for i=1:m
+        % main problem of the instability : cond(Yk{i}'*Sk{i})
+        
         %Winv{i} = inv(Yk{i}'*Sk{i}); % somewhat less stable
         L = size(Yk{i},2);
         Winv{i} = (Yk{i}'*Sk{i})\eye(L);
-        
-        cond(Yk{i}'*Sk{i})
     end
 
     % two-loop recursion
