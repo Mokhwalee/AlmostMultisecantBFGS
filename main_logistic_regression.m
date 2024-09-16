@@ -10,13 +10,14 @@
 
 % Generate Problem
 clc, clf, clear; warning('off');
+
+% add paths to sub-folders
 addpath([pwd,'/parameter']);
 addpath([pwd,'/obj_fcn']);
 addpath([pwd,'/qn_script']);
 addpath([pwd,'/get_hessian']);
 addpath([pwd,'/fig']);
 addpath([pwd,'/debugging_script']);
-
 
 
 % Get parameters
@@ -35,7 +36,7 @@ f0 = fn(x0); %initial function val
 
 % -------- Get trajectory of the each method -------- %
 % Optimal with small step-size (gradient/hessian flow) : Single BFGS (baseline)
-[f_optimal, traj_opt, x_opt] = single_bfgs_vanilla(B, x0, 0.001, 5000, fn, grad);
+[f_optimal, traj_opt, x_opt] = single_bfgs_vanilla(B, x0, 0.01, 10000, fn, grad);
 
 % Single L-BFGS two-loop version
 [f_l_bfgs_2loop, traj_l_bfgs_2loop, x_l_bfgs_2loop] = ...

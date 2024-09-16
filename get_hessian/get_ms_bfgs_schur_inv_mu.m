@@ -24,7 +24,8 @@ D = [rk*Yk, Sk]; % We put rk*I = Hk
 mu = getmu(W, D, D, iter_limit);      
 
 % Compute Hkgk : construct nxn matrix, not limited version
-Hkgk = (rk+mu)*gk - D*W_inv*D'*gk; % D is in R^{nxL}
+% D is in R^{nxL} which construct nxn matrix in the second term 
+Hkgk = (rk+mu)*gk - D*W_inv*D'*gk; 
 
 
 end

@@ -1,4 +1,4 @@
-function [f_optimal, traj_opt, x_opt] = single_bfgs(B, x0, stepsize, max_iter, fn, grad)
+function [f_optimal, traj_opt, x_opt] = single_bfgs_vanilla(B, x0, stepsize, max_iter, fn, grad)
 
 % single secant BFGS
 traj_opt = Inf(max_iter,1);

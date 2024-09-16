@@ -9,13 +9,22 @@ function mu = getmu(W, D1, D2, iter_limit)
     Sig = 1./diag(Sig);
     S2 = (1+sqrt(1+4*Sig.^2*c^2))./(2*Sig);
     F = c*eps/(c+norm(W)) * V*diag(S2)*U';
+
+    %{
     P = inv(c*eye(2*p) - (1/c)*F*F');
     Q = inv(c*eye(2*p) - (1/c)*F'*F);
     invW = inv(W);
-    
+    %}
+
+    P = (c*eye(2*p) - (1/c)*F*F') \ eye(2*p);
+    Q = (c*eye(2*p) - (1/c)*F'*F) \ eye(2*p);
+    invW = W\eye(2*p);
+
+
     B1 = [P,-c*Q*F'-invW ; -c*F*Q-invW',Q];
     B1 = (B1+B1')/2;
-    invB1 = inv(B1);
+    %invB1 = inv(B1);
+    invB1 = B1\eye(4*p);
     DTD = [D1,D2]'*[D1,D2];
     
     while iter<iter_limit 
