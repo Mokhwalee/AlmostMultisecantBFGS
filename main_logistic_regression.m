@@ -9,29 +9,32 @@
 %}
 
 % Generate Problem
-clc, clf, clear; warning('off')
-addpath([pwd,'/objective_function']);
-addpath([pwd,'/quasi_newton_script']);
+clc, clf, clear; warning('off');
 addpath([pwd,'/parameter']);
+addpath([pwd,'/obj_fcn']);
+addpath([pwd,'/qn_script']);
+addpath([pwd,'/get_hessian']);
+addpath([pwd,'/fig']);
+addpath([pwd,'/debugging_script']);
+
+
 
 % Get parameters
-[m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, num_iter, iter_limit, seed, signal] = get_parameter();
+[m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, ...
+    num_iter, iter_limit, seed, signal] = get_parameter();
 rng(seed);
 
 % ----------- Logistic Regression Problems ----------- %%
 [fn, grad, prob_difficulty, matrix_A, y_sol] = ...
     logistic_regression(m, n, seed, sigma, class_balance, logreg_eps, eig_range, signal);
 
-
 % ----------- Initialization ----------- %%
 B = eye(n); 
 x0 = zeros(n,1); 
 f0 = fn(x0); %initial function val
 
-
 % -------- Get trajectory of the each method -------- %
-%% Optimal with small step-size (gradient/hessian flow)
-% Solution : Single BFGS (baseline)
+% Optimal with small step-size (gradient/hessian flow) : Single BFGS (baseline)
 [f_optimal, traj_opt, x_opt] = single_bfgs_vanilla(B, x0, 0.001, 5000, fn, grad);
 
 % Single L-BFGS two-loop version
