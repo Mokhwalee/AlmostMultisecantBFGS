@@ -10,6 +10,9 @@
 
 % Generate Problem
 clc, clf, clear; warning('off')
+addpath([pwd,'/objective_function']);
+addpath([pwd,'/quasi_newton_script']);
+addpath([pwd,'/parameter']);
 
 % Get parameters
 [m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, num_iter, iter_limit, seed, signal] = get_parameter();

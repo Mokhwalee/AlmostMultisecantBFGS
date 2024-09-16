@@ -1,5 +1,5 @@
 function [fn,grad,prob_difficulty, A, b] = logistic_regression(m,n,seed,sigma,class_balance,logreg_eps,eig_range,signal)
-    
+
     if ~isnan(seed)
         rng(seed);
     end
