@@ -17,7 +17,6 @@ addpath([pwd,'/obj_fcn']);
 addpath([pwd,'/qn_script']);
 addpath([pwd,'/get_hessian']);
 addpath([pwd,'/fig']);
-addpath([pwd,'/debugging_script']);
 
 
 % Get parameters
