@@ -85,13 +85,13 @@ legend({'L-BFGS (baseline, two-loop)', ...
 
 xlabel("Iteration", FontSize=30)
 ylabel("f(x)", 'Rotation', 0, Fontsize=30)
-title('Logistic Regression Loss (log-log plot)', FontSize=26)
+title('Logistic Regression Loss (log-log)', FontSize=26)
 
 % Save the figure as a PNG file
-saveas(gcf, fullfile('fig' ,'temp_figure.png'))
+saveas(gcf, fullfile('fig' ,'logreg_figure.png'))
 
-
-
+% save the workspace
+save(fullfile('fig', 'logreg_workspace.mat'));
 
 
 
