@@ -10,7 +10,7 @@ p = 6; % p=L
 sigma = 1; % 1, 10, 30
 num_iter = 200;
 iter_limit = 10;
-% seed = 7 works well too
-seed = 8; % random integer generator
+seed = 5;%works well too
+%seed = 8; % random integer generator
 signal = 1; % 1: high signal, 0: low signal
 end

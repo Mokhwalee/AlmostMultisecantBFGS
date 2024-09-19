@@ -22,7 +22,7 @@ addpath([pwd,'/fig']);
 % ----------- Logistic Regression Problems ----------- %%
 num1 = 4; num2 = 9;
 [A, b, At, bt] = get_mnist_data(num1, num2);
-[fn, grad, m, n] = logistic_regression_mnist(A, b);
+[fn, grad, m, n] = logistic_regression_classification(A, b);
 
 % ----------- Initialization ----------- %%
 stepsize = 0.1;
