@@ -28,7 +28,31 @@ rng(seed);
 [fn, grad, prob_difficulty, matrix_A, y_sol] = ...
     logistic_regression(m, n, seed, sigma, class_balance, logreg_eps, eig_range, signal);
 
-% ----------- Initialization ----------- %%
+
+% -------- Plot histogram of singular values of matrix_A -------- %%
+singular_values = svd(matrix_A);
+bar(singular_values); % Adjust 'NumBins' as needed
+xlabel('Descending order of each singular value', 'FontSize', 22);
+ylabel('Singular Value', 'FontSize', 22);
+title('Bar Graph of the Singular Values', 'FontSize', 20);
+
+% Set the font size of the tick labels
+ax = gca;
+ax.XAxis.FontSize = 20; % Change the font size of the x-axis tick labels
+ax.YAxis.FontSize = 20; % Change the font size of the y-axis tick labels
+
+% Set the ceiling of the y-axis
+ylim([0, singular_values(1)]); % Adjust the upper limit as needed
+xlim([-1, n/2])
+
+name = 'size_'+string(m)+'by'+string(n) + '_seed_'+string(seed) + ...
+        '_signal_'+string(signal) + '_sigma_'+string(sigma);
+
+saveas(gcf, fullfile('fig/sensing_fig/' ,name+'_eigval.png'));
+
+
+
+%% ----------- Initialization ----------- %%
 B = eye(n); 
 x0 = zeros(n,1); 
 f0 = fn(x0); %initial function val
@@ -41,12 +65,11 @@ f0 = fn(x0); %initial function val
 [f_l_bfgs_2loop, traj_l_bfgs_2loop, x_l_bfgs_2loop] = ...
     l_bfgs_2loop(x0, stepsize, num_iter, p, fn, grad);
 
-%% MS BFGS (baseline)
+% MS BFGS (baseline)
 [f_multi_bfgs, traj_multi_bfgs, x_multi_bfgs] = ... % Vanilla
     ms_bfgs_vanilla(B, x0, stepsize, num_iter, p, fn, grad);
 
-
-%%  -------- Limited MS BFGS -------- %%
+%  -------- Limited MS BFGS -------- %%
 % Limited MS BFGS (paper, algorithm 3.1)
 [f_l_ms_bfgs_paper, traj_l_ms_bfgs_paper, x_l_ms_bfgs_paper] = ...
     l_ms_bfgs_paper(x0, stepsize, num_iter, p, fn, grad); 
@@ -93,31 +116,7 @@ ylabel("f(x)", 'Rotation', 0, Fontsize=30)
 title('Logistic Regression Loss (log-log)', FontSize=26)
 
 % Save the figure as a PNG file
-name = 'size_'+string(m)+'by'+string(n)+'_seed_'+string(seed)+'_signal_'+string(signal);
 saveas(gcf, fullfile('fig/sensing_fig/' ,name+'.png'));
 
 % save the workspace
 save(fullfile('fig/sensing_fig/', name+'_workspace.mat'));
-
-
-%% -------- Plot histogram of singular values of matrix_A -------- %%
-singular_values = svd(matrix_A);
-bar(singular_values); % Adjust 'NumBins' as needed
-xlabel('Descending order of each singular value', 'FontSize', 22);
-ylabel('Singular Value', 'FontSize', 22);
-title('Bar Graph of the Singular Values', 'FontSize', 20);
-
-% Set the font size of the tick labels
-ax = gca;
-ax.XAxis.FontSize = 20; % Change the font size of the x-axis tick labels
-ax.YAxis.FontSize = 20; % Change the font size of the y-axis tick labels
-
-% Set the ceiling of the y-axis
-ylim([0, singular_values(1)/2]); % Adjust the upper limit as needed
-xlim([-1, 50])
-
-% Set the x-axis and y-axis to logarithmic scales
-%set(gca, 'XScale', 'log', 'YScale', 'log');
-
-saveas(gcf, fullfile('fig/sensing_fig/' ,name+'_eigval.png'));
-
