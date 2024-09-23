@@ -8,7 +8,7 @@ logreg_eps = 0.0001;
 stepsize = 0.01;
 p = 6; % p=L
 sigma = 1; % 1, 10, 30
-num_iter = 200;
+num_iter = 20;
 iter_limit = 10;
 seed = 5;%works well too
 %seed = 8; % random integer generator
