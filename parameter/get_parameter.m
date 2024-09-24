@@ -11,15 +11,19 @@ function [m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, num_it
     iter_limit = 10;
 
     p = 5; % p=L
-    seed = 5;
+    seed = 1;
 
-    % 1: high signal, 0: low signal ???????
-    % --> doesn't impact much to the eigenvalue of the design matrix
+    %{
+    'signal=1' is used to create c_bar where
+    c_bar = exp(-linspace(0, eig_range, n))'
+    c = randn(n,1).*(1-c_bar); 
+    If signal=0 will take eig_range value ????
+    For example, if signal=1 and eig_range=1, eigen values are similar to
+    each other (low signal)
+    Otherwise, if signal=1 and eig_range=10, eigen values are more distinct to
+    each other (high signal)
+    %}
     signal = 0; 
-
-    % Used to create c_bar where
-    % c_bar = exp(-linspace(0, eig_range, n))'
-    % c = randn(n,1).*(1-c_bar); 
     eig_range = 20; % 10, 20, 30
    
 
@@ -27,7 +31,7 @@ function [m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, num_it
     % if sigma is too big, a is dominated by the W where
     % W = sigma*randn(m,n).*(ones(m,1)*c_bar');
     % if sigma = 1, clear signal, if sigma=10, lot of signal ???
-    sigma = 10; % 1, 10, 30
+    sigma = 5; % 1, 10, 30
 
 
 end
