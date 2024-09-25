@@ -1,3 +1,5 @@
+% Plot eignevalues of the design matrix A
+
 % Generate Problem
 clc, clf, clear; warning('off');
 

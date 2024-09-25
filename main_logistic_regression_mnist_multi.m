@@ -11,14 +11,6 @@
 % Generate Problem
 clc, clf, clear; warning('off');
 
-% add paths to sub-folders
-addpath([pwd,'/data']);
-addpath([pwd,'/obj_fcn']);
-addpath([pwd,'/qn_script']);
-addpath([pwd,'/get_hessian']);
-addpath([pwd,'/parameter']);
-addpath([pwd,'/fig']);
-
 % ----------- Logistic Regression Problems ----------- %%
 num_classes = 3;
 [A, b, At, bt] = get_mnist_data_multi(num_classes);

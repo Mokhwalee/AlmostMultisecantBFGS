@@ -11,14 +11,6 @@
 % Generate Problem
 clc, clf, clear; warning('off');
 
-% add paths to sub-folders
-addpath([pwd,'/data']);
-addpath([pwd,'/obj_fcn']);
-addpath([pwd,'/qn_script']);
-addpath([pwd,'/get_hessian']);
-addpath([pwd,'/parameter']);
-addpath([pwd,'/fig']);
-
 % ----------- Logistic Regression Problems ----------- %%
 [A, b, At, bt] = get_student_performance_data(num1, num2);
 [fn, grad, m, n] = logistic_regression_classification(A, b);
