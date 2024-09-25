@@ -46,7 +46,7 @@ for signal = signal_val                     % 0 or 1
         
                 name = 'sigma'+string(sigma) + '_eigrange'+string(eig_range)+ '_seed'+string(seed);
                 folder_name = 'sensing_fig/trajectory_fig_signal'+string(signal);
-                saveas(gcf, fullfile(folder_name ,'eigs_'+name+'.png'));
+                saveas(gcf, fullfile(folder_name ,'eigs_'+'sigma'+string(sigma) + '_eigrange'+string(eig_range)+'.png'));
     
                 % ----------- Run QN simulations ----------- %
                 run_qn_sensing_problem(n, fn, grad, stepsize, num_iter, p, iter_limit, name, folder_name);
