@@ -11,14 +11,6 @@
 % Generate Problem
 clc, clf, clear; warning('off');
 
-% add paths to sub-folders
-addpath([pwd,'/parameter']);
-addpath([pwd,'/obj_fcn']);
-addpath([pwd,'/qn_script']);
-addpath([pwd,'/get_hessian']);
-addpath([pwd,'/fig']);
-
-
 % Get parameters
 [m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, ...
     num_iter, iter_limit, seed, signal] = get_parameter();

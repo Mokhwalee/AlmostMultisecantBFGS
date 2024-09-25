@@ -1,4 +1,5 @@
-function [m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, num_iter, iter_limit, seed, signal] = get_parameter()
+function [m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, ...
+          num_iter, iter_limit, seed, signal] = get_parameter()
 
     % Problem size m by n
     m = 500;
@@ -21,13 +22,11 @@ function [m, n, eig_range, class_balance, logreg_eps, stepsize, p, sigma, num_it
     signal = 0; 
     eig_range = 20; % 10, 20, 30
    
-
     % adjust the error of the data
     % if sigma is too big, a is dominated by the W where
     % W = sigma*randn(m,n).*(ones(m,1)*c_bar');
     % if sigma = 1, clear signal, if sigma=10, not clear signal/too much
     % signal
     sigma = 5; % 1, 10, 30
-
 
 end
