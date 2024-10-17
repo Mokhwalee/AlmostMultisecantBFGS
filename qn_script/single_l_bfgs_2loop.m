@@ -1,8 +1,11 @@
-% Brute Force version : Limited Memory single secant BFGS
-function [f_optimal, traj_opt, x_opt] = l_bfgs_2loop(x0, stepsize, max_iter, L, fn, grad)
+
+function [f_optimal, traj_opt, x_opt, traj_grad, error_rate] = ...
+    single_l_bfgs_2loop(x0, stepsize, max_iter, L, fn, grad, x_sol)
 
     %n = size(B,1);
     traj_opt = Inf(max_iter,1);
+    traj_grad = Inf(max_iter,1);
+    error_rate = Inf(max_iter,1);
     smem = []; ymem = [];
     x = x0;
 
@@ -10,6 +13,7 @@ function [f_optimal, traj_opt, x_opt] = l_bfgs_2loop(x0, stepsize, max_iter, L, 
     f_optimal = Inf;
 
     for iter = 1:max_iter
+        traj_grad(iter) = norm(grad(x))^2;
 
         if iter == 1
             xn = x - grad(x)*stepsize;
@@ -48,6 +52,7 @@ function [f_optimal, traj_opt, x_opt] = l_bfgs_2loop(x0, stepsize, max_iter, L, 
 
         x = xn;
         traj_opt(iter) = fn(x);
+        error_rate(iter) = sum(sign(x_sol) ~= sign(x));
 
         if fn(x) < f_optimal
             x_opt = x; 
@@ -55,8 +60,9 @@ function [f_optimal, traj_opt, x_opt] = l_bfgs_2loop(x0, stepsize, max_iter, L, 
         end
 
         % stopping criteria
-        if fn(x)<1e-14
-            traj_opt(iter+1:max_iter)=fn(x); 
+        if norm(grad(x))<1e-14 || fn(x)<1e-14
+            traj_opt(iter+1:max_iter) = fn(x); 
+            traj_grad(iter+1:max_iter) = norm(grad(x))^2;
             break; 
         end
 

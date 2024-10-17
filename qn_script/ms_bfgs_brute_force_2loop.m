@@ -1,9 +1,10 @@
 % Description: L-MS-BFGS method with our own implementation
 
-function [f_optimal, traj_opt, x_opt] = ms_bfgs_brute_force_2loop(x0, stepsize, max_iter, L, fn, grad)
+function [f_optimal, traj_opt, x_opt, traj_grad] = ms_bfgs_brute_force_2loop(x0, stepsize, max_iter, L, fn, grad)
 
     %n = size(B,1);
     traj_opt = Inf(max_iter,1);
+    traj_grad = Inf(max_iter,1);
     smem = []; ymem = [];
     x = x0;
     x_opt = x0; 
@@ -13,7 +14,7 @@ function [f_optimal, traj_opt, x_opt] = ms_bfgs_brute_force_2loop(x0, stepsize, 
     Sk = {}; Yk = {};
 
     for iter = 1:max_iter
-
+        traj_grad(iter) = norm(grad(x))^2;
         if iter == 1
             xn = x - grad(x)*stepsize;
         else
@@ -54,8 +55,9 @@ function [f_optimal, traj_opt, x_opt] = ms_bfgs_brute_force_2loop(x0, stepsize, 
         end   
 
         % stopping criteria
-        if fn(x)<1e-14
-            traj_opt(iter+1:max_iter) = fn(x); 
+        if norm(grad(x))<1e-14 || fn(x)<1e-14
+            traj_opt(iter+1:max_iter)=fn(x); 
+            traj_grad(iter+1:max_iter) = norm(grad(x))^2;
             break; 
         end
 

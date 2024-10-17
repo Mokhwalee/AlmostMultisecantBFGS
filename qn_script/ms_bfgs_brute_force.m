@@ -1,9 +1,10 @@
-function [f_optimal, traj_opt, x_opt] = ms_bfgs_brute_force(x0, stepsize, ...
+function [f_optimal, traj_opt, x_opt, traj_grad] = ms_bfgs_brute_force(x0, stepsize, ...
                                         max_iter, L, fn, grad)
 
 % Brute Force : Limited Memory multi secant BFGS for H
 % Have to save the 'm' previous Sk(=smem) and Yk(=ymem)
 traj_opt = Inf(max_iter,1);
+traj_grad = Inf(max_iter,1);
 smem = []; ymem = [];
 x = x0;
 
@@ -14,7 +15,7 @@ f_optimal = Inf;
 Sk = {}; Yk = {};
 
 for iter = 1:max_iter
-
+    traj_grad(iter) = norm(grad(x))^2;
     if iter == 1
         xn = x - grad(x)*stepsize;
     else
@@ -56,7 +57,11 @@ for iter = 1:max_iter
     end   
     
     % stopping criteria
-    if fn(x)<1e-14, traj_opt(iter+1:max_iter)=fn(x); break; end
+    if norm(grad(x))<1e-14 || fn(x)<1e-14
+        traj_opt(iter+1:max_iter)=fn(x); 
+        traj_grad(iter+1:max_iter) = norm(grad(x))^2;
+        break; 
+    end
 
 end
 

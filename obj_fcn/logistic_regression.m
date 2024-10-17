@@ -1,4 +1,4 @@
-function [fn,grad,prob_difficulty, A, b] = logistic_regression...
+function [fn,grad,prob_difficulty, A, b, bA] = logistic_regression...
                 (m,n,seed,sigma,class_balance,logreg_eps,eig_range,signal)
 
     if ~isnan(seed)
@@ -23,9 +23,14 @@ function [fn,grad,prob_difficulty, A, b] = logistic_regression...
         disp("Warning : Set the signal value either 0 or 1")
     end
 
-    W = sigma*randn(m,n).*(ones(m,1)*c_bar'); % error of the data
-    b = 2*(rand(m,1) > class_balance)-1;
+    W = sigma*rand(m,n).*(ones(m,1)*c_bar'); % error of the data
+    b = 2*(randn(m,1) > class_balance)-1;
     A = b*c' + W;                             % data in R^{m x d}
+    
+    % -------- Normalize columns of matrix_A -------- %%
+    %mean_A = mean(A);
+    %std_A = std(A);
+    %A = (A - mean_A) ./ std_A;
 
     bA = (repmat(b,1,n).*A); 
     sigmoid = @(x)(1./(1+exp(-x)));
