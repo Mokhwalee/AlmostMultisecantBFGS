@@ -1,31 +1,44 @@
-function [] = run_qn_sensing_problem(n, fn, grad, stepsize, num_iter, p, iter_limit, name, folder_name)
+function [trajectories, trajectory_grad_square] = run_qn_sensing_problem(n, fn, grad, stepsize, num_iter, p, iter_limit, name, folder_name)
     
     % Initialization
     B = eye(n); 
     x0 = zeros(n,1); 
     
-    % Run QN
-    [f_optimal, traj_opt, x_opt] = ...
-        single_bfgs_vanilla(B, x0, 0.01, 10000, fn, grad);
+    % get optimal solution from single bfgs
+    [f_optimal, traj_opt, x_opt, traj_grad] = ...
+        single_bfgs_vanilla(B, x0, 0.01, 100000, fn, grad);
     
-    [f_l_bfgs_2loop, traj_l_bfgs_2loop, x_l_bfgs_2loop] = ...
-        l_bfgs_2loop(x0, stepsize, num_iter, p, fn, grad);
+    % Run QN methods
+    [f_l_bfgs_2loop, traj_l_bfgs_2loop, x_l_bfgs_2loop, traj_l_bfgs_2loop_grad, err_l_bfgs_2loop] = ...
+        single_l_bfgs_2loop(x0, stepsize, num_iter, p, fn, grad, x_opt);
     
-    [f_multi_bfgs, traj_multi_bfgs, x_multi_bfgs] = ... % Vanilla
-        ms_bfgs_vanilla(B, x0, stepsize, num_iter, p, fn, grad);
+    [f_multi_bfgs, traj_multi_bfgs, x_multi_bfgs, traj_multi_bfgs_grad, err_multi_bfgs] = ... % Vanilla
+        ms_bfgs_vanilla(B, x0, stepsize, num_iter, p, fn, grad, x_opt);
     
-    [f_l_ms_bfgs_paper, traj_l_ms_bfgs_paper, x_l_ms_bfgs_paper] = ...
-        l_ms_bfgs_paper(x0, stepsize, num_iter, p, fn, grad); 
+    [f_l_ms_bfgs_paper, traj_l_ms_bfgs_paper, x_l_ms_bfgs_paper, traj_l_ms_bfgs_paper_grad, err_l_ms_bfgs_paper] = ...
+        l_ms_bfgs_paper(x0, stepsize, num_iter, p, fn, grad, x_opt); 
     
-    [f_l_ms_bfgs_2loop, traj_l_ms_bfgs_2loop, x_l_ms_bfgs_2loop] = ...    
-        l_ms_bfgs_2loop(x0, stepsize, num_iter, p, fn, grad);
+    [f_l_ms_bfgs_2loop, traj_l_ms_bfgs_2loop, x_l_ms_bfgs_2loop, traj_l_ms_bfgs_2loop_grad, err_l_ms_bfgs_2loop] = ...    
+        l_ms_bfgs_2loop(x0, stepsize, num_iter, p, fn, grad, x_opt);
     
-    [f_l_ms_bfgs_2loop_mu, traj_l_ms_bfgs_2loop_mu, x_l_ms_bfgs_2loop_mu] = ...    
-        l_ms_bfgs_2loop_mu(x0, stepsize, num_iter, p, fn, grad, iter_limit);
+    [f_l_ms_bfgs_2loop_mu, traj_l_ms_bfgs_2loop_mu, x_l_ms_bfgs_2loop_mu, traj_l_ms_bfgs_2loop_mu_grad, err_l_ms_bfgs_2loop_mu] = ...    
+        l_ms_bfgs_2loop_mu(x0, stepsize, num_iter, p, fn, grad, iter_limit, x_opt);
     
-    [f_ms_bfgs_schur_inv, traj_ms_bfgs_schur_inv, x_ms_bfgs_schur_inv] = ...
-        ms_bfgs_schur_inv_mu(x0, stepsize, num_iter, p, fn, grad, iter_limit);
+    [f_ms_bfgs_schur_inv, traj_ms_bfgs_schur_inv, x_ms_bfgs_schur_inv, traj_ms_bfgs_schur_inv_grad, err_ms_bfgs_schur_inv] = ...
+        ms_bfgs_schur_inv_mu(x0, stepsize, num_iter, p, fn, grad, iter_limit, x_opt);
     
+
+    % Error rate graph of each method
+    error_bfgs = [
+        err_l_bfgs_2loop, ...
+        err_multi_bfgs, ...
+        err_l_ms_bfgs_paper, ...
+        err_l_ms_bfgs_2loop, ...
+        err_l_ms_bfgs_2loop_mu, ...
+        err_ms_bfgs_schur_inv, ... 
+        ];
+
+    % Objective Function Trajectory
     trajectory_bfgs = [
         traj_l_bfgs_2loop, ...
         traj_multi_bfgs, ...
@@ -35,15 +48,18 @@ function [] = run_qn_sensing_problem(n, fn, grad, stepsize, num_iter, p, iter_li
         traj_ms_bfgs_schur_inv  
         ];
     
-    graph = trajectory_bfgs - f_optimal;
+    
+    % Difference between the optimal trajectory and the approximate traj
+    trajectories = trajectory_bfgs - f_optimal;
+    %{
     loglog(graph,'-O', 'MarkerSize', 3)
     legend({'L-BFGS (baseline, two-loop)', ...
         'MS BFGS (baseline)', ...
         'L-MS-BFGS (paper)', ...
         'L-MS-BFGS (2-loop)', ...
-        'L-MS-BFGS-mu (ours)', ...
-        'MS-BFGS-Schur-inv-mu (IEEE)', ...
-        }, Location="southwest", Fontsize=14)
+        'L-MS-BFGS-Schur-inv-mu (ours)', ...
+        'MS-BFGS-Schur-inv-mu (ours)', ...
+        }, Location="southwest", Fontsize=13)
     
     % Set the font size of the tick labels
     ax = gca;
@@ -51,13 +67,47 @@ function [] = run_qn_sensing_problem(n, fn, grad, stepsize, num_iter, p, iter_li
     ax.YAxis.FontSize = 20; % Change the font size of the y-axis tick labels
     
     xlabel("Iteration", FontSize=30)
-    ylabel("f(x)", 'Rotation', 0, Fontsize=30)
-    title('Sensing Problem - Logistic Regression(log-log)', FontSize=26)
+    ylabel("f(x)-f^*", 'Rotation', 0, Fontsize=30)
+    title('Logistic Regression(log-log)', FontSize=26)
     
-    % Save the figure as a PNG file
-    save(fullfile(folder_name+'/workspace', name+'_workspace.mat')); % workspace
     saveas(gcf, fullfile(folder_name, name+'.png'));    % plot
     
+    %}
 
+    % Gradient Trajectory graph 
+    trajectory_grad_square = [
+    traj_l_bfgs_2loop_grad, ...
+    traj_multi_bfgs_grad, ...
+    traj_l_ms_bfgs_paper_grad, ...
+    traj_l_ms_bfgs_2loop_grad, ...
+    traj_l_ms_bfgs_2loop_mu_grad, ...
+    traj_ms_bfgs_schur_inv_grad  
+    ];
+
+    loglog(trajectory_grad_square,'-O', 'MarkerSize', 3)
+    legend({'L-BFGS (baseline, two-loop)', ...
+        'MS BFGS (baseline)', ...
+        'L-MS-BFGS (paper)', ...
+        'L-MS-BFGS (2-loop)', ...
+        'L-MS-BFGS-mu (ours)', ...
+        'MS-BFGS-Schur-inv-mu (ours)', ...
+        }, Location="southwest", Fontsize=13)
+
+    % Set the font size of the tick labels
+    ax = gca;
+    ax.XAxis.FontSize = 20; % Change the font size of the x-axis tick labels
+    ax.YAxis.FontSize = 20; % Change the font size of the y-axis tick labels
+    
+    xlabel("Iteration", FontSize=30)
+    ylabel("||\nabla f(x)||_2^2", 'Rotation', 90, Fontsize=30)
+    title('Logistic Regression(log-log)', FontSize=26)
+    
+
+    % Save the figure as a PNG file
+    matfoldername = folder_name+'/workspace';
+    matfilename = name+'_workspace.mat';
+    save(fullfile(matfoldername, matfilename)); % workspace
+    saveas(gcf, fullfile(folder_name, name+'_grad.png'));    % plot
+    
 
 end
